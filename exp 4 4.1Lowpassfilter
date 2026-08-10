@@ -1,0 +1,41 @@
+clc;
+clear;
+close all;
+
+%% -------------------- Input Parameters --------------------
+fp = 1000;        % Passband cutoff frequency (Hz)
+fs = 4000;        % Sampling frequency (Hz)
+N  = 50;          % Filter order (even preferred)
+
+wc = fp / (fs/2); % Normalized cutoff frequency
+
+%% -------------------- Rectangular Window --------------------
+b_rect = fir1(N, wc, 'low', rectwin(N+1));
+
+disp('--- Rectangular Window Coefficients ---');
+disp(b_rect');
+
+%% -------------------- Hamming Window --------------------
+b_hamm = fir1(N, wc, 'low', hamming(N+1));
+
+disp('--- Hamming Window Coefficients ---');
+disp(b_hamm');
+
+%% -------------------- Hanning Window --------------------
+b_hann = fir1(N, wc, 'low', hanning(N+1));
+
+disp('--- Hanning Window Coefficients ---');
+disp(b_hann');
+
+%% -------------------- Frequency Responses --------------------
+figure;
+freqz(b_rect, 1);
+title('Low-pass FIR using Rectangular Window');
+
+figure;
+freqz(b_hamm, 1);
+title('Low-pass FIR using Hamming Window');
+
+figure;
+freqz(b_hann, 1);
+title('Low-pass FIR using Hanning Window');
