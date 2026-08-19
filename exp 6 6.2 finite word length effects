@@ -1,0 +1,63 @@
+clc;
+clear;
+close all;
+
+%% 1. Generate the Input Signal
+n = 0:79;
+x = sin(2*pi*n/40);
+
+%% 2. Set Quantization Factor
+q = 8;
+
+%% 3. Perform Quantization
+% Truncation quantization
+xt = floor(x*q)/q;
+
+% Rounding quantization
+xr = round(x*q)/q;
+
+%% 4. Calculate Quantization Error
+et = x - xt;        % Truncation error
+er = x - xr;        % Rounding error
+
+%% 5. Original vs Quantized Signal
+figure;
+plot(n, x, 'b', n, xr, 'r', 'LineWidth', 1.5);
+grid on;
+title('Original vs Quantized');
+xlabel('Sample Index');
+ylabel('Amplitude');
+legend('Original', 'Quantized');
+
+%% 6. Truncation vs Rounding
+figure;
+plot(n, x, 'b', n, xt, 'r', n, xr, 'g', 'LineWidth', 1.5);
+grid on;
+title('Truncation vs Rounding');
+xlabel('Sample Index');
+ylabel('Amplitude');
+legend('Original', 'Truncated', 'Rounded');
+
+%% 7. Quantization Error
+figure;
+stem(n, et, 'r');
+hold on;
+stem(n, er, 'g');
+grid on;
+title('Quantization Error');
+xlabel('Sample Index');
+ylabel('Error');
+legend('Truncation', 'Rounding');
+
+%% 8. MSE Comparison
+figure;
+
+mse_truncation = mean(et.^2);
+mse_rounding = mean(er.^2);
+
+bar([mse_truncation mse_rounding]);
+
+set(gca, 'XTickLabel', {'Truncation', 'Rounding'});
+grid on;
+title('MSE Comparison');
+ylabel('MSE');
