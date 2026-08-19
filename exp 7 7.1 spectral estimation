@@ -1,0 +1,54 @@
+clc;
+clear;
+close all;
+
+%% 1. Signal Parameters
+fs = 1000;                    % Sampling frequency (Hz)
+t = (0:999) / fs;             % Time vector
+
+%% 2. Generate Original Signal
+s = sin(2*pi*100*t) + 0.5*sin(2*pi*200*t);
+
+%% 3. Generate Noise
+n = 0.3 * randn(size(t));
+
+%% 4. Add Noise to Signal
+x = s + n;
+
+%% 5. Plot Signal with Noise
+figure;
+plot(t, x);
+grid on;
+title('Signal with Noise');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+%% 6. Power Spectral Density using Periodogram
+figure;
+periodogram(x, [], [], fs);
+title('PSD using Periodogram');
+
+%% 7. Magnitude Spectrum using FFT
+figure;
+
+X = abs(fft(x));
+f = (0:length(X)-1) * fs / length(X);
+
+plot(f(1:500), X(1:500));
+grid on;
+title('Magnitude Spectrum');
+xlabel('Frequency (Hz)');
+ylabel('Magnitude');
+
+%% 8. Signal and Noise Power Comparison
+figure;
+
+signal_power = mean(s.^2);
+noise_power = var(n);
+
+bar([signal_power noise_power]);
+
+set(gca, 'XTickLabel', {'Signal', 'Noise'});
+title('Power Comparison');
+ylabel('Power');
+grid on;
